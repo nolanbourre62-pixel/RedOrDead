@@ -1,0 +1,6 @@
+BOURRÉ Nolan
+VANHILLE-DEKEISTER Gabriel
+
+L'API sert a gerer les joueurs et des parties de roulette
+Elle crée, consulte, modifie et supprime des joueurs et des parties
+Elle lance une partie de roulette et obtient un numéro gagnant ainsi que sa couleur
