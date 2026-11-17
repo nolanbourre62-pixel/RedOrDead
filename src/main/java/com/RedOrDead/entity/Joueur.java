@@ -15,10 +15,27 @@ public class Joueur {
     @OneToMany(mappedBy = "joueur")
     private List<Partie> parties = new ArrayList<>();
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getPseudo() { return pseudo; }
-    public void setPseudo(String pseudo) { this.pseudo = pseudo; }
-    public List<Partie> getParties() { return parties; }
-    public void setParties(List<Partie> parties) { this.parties = parties; }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getPseudo() {
+        return pseudo;
+    }
+
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
+    }
+
+    public List<Partie> getParties() {
+        return parties;
+    }
+
+    public void setParties(List<Partie> parties) {
+        this.parties = parties;
+    }
 }
