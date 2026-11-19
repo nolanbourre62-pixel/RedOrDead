@@ -4,6 +4,7 @@ import com.RedOrDead.entity.Partie;
 import java.util.List;
 
 public interface PartieService {
+
     List<Partie> trouverToutes();
     Partie trouverParId(Long id);
     Partie creer(Long joueurId);
