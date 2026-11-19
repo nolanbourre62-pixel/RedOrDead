@@ -2,7 +2,9 @@ package com.RedOrDead.service;
 
 import com.RedOrDead.entity.Joueur;
 import com.RedOrDead.repository.JoueurRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
@@ -18,16 +20,23 @@ public class JoueurServiceImpl implements JoueurService {
         return repository.findAll();
     }
     public Joueur trouverParId(Long id) {
-        return repository.findById(id).orElse(null);
+        return repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Joueur introuvable"));
     }
     public Joueur creer(Joueur joueur) {
         return repository.save(joueur);
     }
     public Joueur modifier(Long id, Joueur joueur) {
+        if (!repository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Joueur introuvable");
+        }
         joueur.setId(id);
         return repository.save(joueur);
     }
     public void supprimer(Long id) {
+        if (!repository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Joueur introuvable");
+        }
         repository.deleteById(id);
     }
 }

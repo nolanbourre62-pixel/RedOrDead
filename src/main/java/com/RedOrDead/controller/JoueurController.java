@@ -4,6 +4,7 @@ import com.RedOrDead.entity.Joueur;
 import com.RedOrDead.service.JoueurService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/api/joueurs")
@@ -29,7 +30,9 @@ public class JoueurController {
         return service.modifier(id, joueur);
     }
 
-    @DeleteMapping("/{id}") public void supprimer(@PathVariable Long id) {
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void supprimer(@PathVariable Long id) {
         service.supprimer(id);
     }
 }
