@@ -6,6 +6,9 @@ info:
 http:
   method: PUT
   url: "{{baseUrl}}/api/joueurs/1"
+  body:
+    type: json
+    data: '{"pseudo":"joueur1bis","password":"1234"}'
   auth: inherit
 
 settings:

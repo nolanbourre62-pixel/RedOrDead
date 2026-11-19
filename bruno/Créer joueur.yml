@@ -5,10 +5,10 @@ info:
 
 http:
   method: POST
-  url: ""
+  url: "{{baseUrl}}/api/joueurs"
   body:
     type: json
-    data: ""
+    data: '{"pseudo":"joueur1","password":"1234"}'
   auth: inherit
 
 settings:

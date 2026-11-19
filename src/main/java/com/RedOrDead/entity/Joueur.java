@@ -18,7 +18,7 @@ public class Joueur {
     private String password;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "joueur")
+    @OneToMany(mappedBy = "joueur", cascade = CascadeType.REMOVE)
     private List<Partie> parties = new ArrayList<>();
 
     public Long getId() {
