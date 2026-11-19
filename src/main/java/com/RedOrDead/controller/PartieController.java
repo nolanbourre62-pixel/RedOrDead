@@ -30,4 +30,10 @@ public class PartieController {
     }
 
     @DeleteMapping("/{id}") public void supprimer(@PathVariable Long id) { service.supprimer(id); }
+
+    @GetMapping("/joueur/{joueurId}")
+    public List<Partie> parJoueur(@PathVariable Long joueurId) {
+        return service.trouverParJoueur(joueurId);
+    }
+
 }

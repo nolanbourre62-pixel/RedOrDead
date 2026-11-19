@@ -48,3 +48,8 @@ public class PartieServiceImpl implements PartieService {
 
     public void supprimer(Long id) { parties.deleteById(id); }
 }
+
+@Override
+public List<Partie> trouverParJoueur(Long joueurId) {
+    return parties.findByJoueurId(joueurId);
+}

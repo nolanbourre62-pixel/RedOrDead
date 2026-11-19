@@ -10,4 +10,5 @@ public interface PartieService {
     Partie creer(Long joueurId);
     Partie modifier(Long id, Partie partie);
     void supprimer(Long id);
+    List<Partie> trouverParJoueur(Long joueurId);
 }
