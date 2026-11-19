@@ -5,6 +5,7 @@ import com.RedOrDead.service.JoueurService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import org.springframework.http.HttpStatus;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/joueurs")
@@ -22,11 +23,12 @@ public class JoueurController {
         return service.trouverParId(id);
     }
 
-    @PostMapping public Joueur creer(@RequestBody Joueur joueur) {
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping public Joueur creer(@Valid @RequestBody Joueur joueur) {
         return service.creer(joueur);
     }
 
-    @PutMapping("/{id}") public Joueur modifier(@PathVariable Long id, @RequestBody Joueur joueur) {
+    @PutMapping("/{id}") public Joueur modifier(@PathVariable Long id, @Valid @RequestBody Joueur joueur) {
         return service.modifier(id, joueur);
     }
 

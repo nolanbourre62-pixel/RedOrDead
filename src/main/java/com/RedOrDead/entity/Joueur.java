@@ -4,11 +4,13 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Joueur {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "Le pseudo du joueur est obligatoire")
     private String pseudo;
 
     @JsonIgnore
