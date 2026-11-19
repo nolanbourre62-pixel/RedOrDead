@@ -52,4 +52,16 @@ public class PartieServiceImpl implements PartieService {
     public List<Partie> trouverParJoueur(Long joueurId) {
         return parties.findByJoueurId(joueurId);
     }
+
+    @Override
+    public Partie creerParPseudo(String pseudo) {
+        Joueur joueur = joueurs.findByPseudo(pseudo).orElse(null);
+        if (joueur == null) return null;
+        int n = (int) (Math.random() * 37);
+        Partie p = new Partie();
+        p.setJoueur(joueur);
+        p.setNumeroGagnant(n);
+        p.setCouleurGagnante(n == 0 ? "VERT" : estRouge(n) ? "ROUGE" : "NOIR");
+        return parties.save(p);
+    }
 }
