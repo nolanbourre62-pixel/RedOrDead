@@ -1,37 +1,92 @@
-# baseSpringBoot
+# RedOrDead — API REST Roulette (R3-03)
 
-A Spring Boot application using Java 21, Maven, and PostgreSQL. Docker Compose starts the application and its database together.
+API REST **Spring Boot 3 / PostgreSQL** conteneurisée avec Docker, sécurisée par **JWT** et documentée via **Swagger UI**.
 
-## Requirements
+---
 
-- Docker Engine or Docker Desktop
-- Docker Compose (`docker-compose` command)
+## 1. Lancement de l'API
 
-## Launch
-
-From the project root, run:
+À la racine du projet, lancer les conteneurs :
 
 ```bash
-docker-compose up
+docker compose up -d --build
 ```
 
-Compose builds the application image, starts PostgreSQL, waits for the database to become healthy, and then starts the application. On the first launch, building the image may take a few minutes.
+> Attendre ~15 secondes le démarrage complet de Spring Boot.
 
-Once the application has started, it is available at <http://localhost:8080>. PostgreSQL is exposed on `localhost:5433`.
+| Service | Lien / Adresse | Identifiants |
+| :--- | :--- | :--- |
+| **API Backend** | `http://localhost:8084` | — |
+| **Swagger UI** | `http://localhost:8084/swagger-ui/index.html` | Documentation interactive |
+| **Adminer (BDD)** | `http://localhost:8081` | Serveur: `postgres` · User: `postgres` · Pass: `postgrespassword` · BDD: `base_db` |
 
-To run the containers in the background instead, use `docker-compose up -d`. To stop them, run `docker-compose down` from the project root.
+---
 
-The Compose configuration uses a named volume (`postgres_data`) to retain database data when the containers are stopped.
+## 2. Fonctionnement de l'Authentification
 
-Adminer is available at <http://localhost:8081/?pgsql=postgres&username=postgres&db=base_db> for managing the PostgreSQL database through a web interface.
+L'API utilise une authentification **Stateless via JWT (JSON Web Token)** :
 
-## Reset the database
+1. **Inscription (`/api/auth/register`) :** Le mot de passe est haché avec `BCrypt` avant stockage en base (`joueur`).
+2. **Connexion (`/api/auth/login`) :** Le serveur vérifie le mot de passe et génère un token JWT signé.
+3. **Protection :** Le filtre `JwtFilter` intercepte chaque requête protégée (`/api/joueurs/**`, `/api/parties/**`), valide l'en-tête `Authorization: Bearer <token>` et injecte l'utilisateur dans le contexte Spring Security.
 
-If the database is in a bad state and you want to start over, run:
+---
+
+## 3. Procédure de Connexion & Test
+
+### Option A : Via Bruno *(collection incluse dans `/bruno`)*
+
+1. **Créer son compte (`POST` Register)**
+   - **URL :** `http://localhost:8084/api/auth/register`
+   - **Onglet `Body` → `JSON` :**
+     ```json
+     {
+       "pseudo": "gaby",
+       "password": "123"
+     }
+     ```
+   - Cliquer sur **Send** → Statut `200 OK`.
+
+2. **Se connecter (`POST` Login)**
+   - **URL :** `http://localhost:8084/api/auth/login`
+   - **Onglet `Body` → `JSON` :**
+     ```json
+     {
+       "pseudo": "gaby",
+       "password": "123"
+     }
+     ```
+   - Cliquer sur **Send** → Copier la valeur de `"token"` dans la réponse.
+
+3. **Accéder aux routes protégées (ex : `GET` Parties)**
+   - **URL :** `http://localhost:8084/api/parties`
+   - **Onglet `Auth` → `Bearer Token` :** Coller le token et cliquer sur **Send**.
+
+---
+
+### Option B : Via Swagger UI (`http://localhost:8084/swagger-ui/index.html`)
+
+1. **S'inscrire :** Exécuter `POST /api/auth/register` avec `{"pseudo": "gaby", "password": "123"}`.
+2. **Se connecter :** Exécuter `POST /api/auth/login` avec les mêmes identifiants → copier le token reçu.
+3. **S'authentifier :** Cliquer sur **Authorize** (en haut à droite), coller le token et valider.
+4. **Tester :** Appeler les routes `/api/parties`, `/api/joueurs` ou `/api/externe/conseil`.
+
+---
+
+### Option C : Via Terminal (`curl`)
 
 ```bash
-docker compose down -v
-docker compose up -d
-```
+# 1. Inscription
+curl -X POST http://localhost:8084/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"pseudo": "gaby", "password": "123"}'
 
-The `-v` option deletes the database volume, so **all stored database data will be permanently removed**. The second command recreates the containers in the background.
+# 2. Connexion
+curl -X POST http://localhost:8084/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"pseudo": "gaby", "password": "123"}'
+
+# 3. Requête authentifiée
+curl http://localhost:8084/api/parties \
+  -H "Authorization: Bearer <TON_TOKEN_JWT>"
+```
