@@ -2,7 +2,9 @@ package com.RedOrDead.service;
 
 import com.RedOrDead.entity.*;
 import com.RedOrDead.repository.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
@@ -18,13 +20,14 @@ public class PartieServiceImpl implements PartieService {
         return parties.findAll();
     }
     public Partie trouverParId(Long id) {
-        return parties.findById(id).orElse(null);
+        return parties.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Partie introuvable"));
     }
 
     public Partie creer(Long joueurId) {
-        
-        Joueur joueur = joueurs.findById(joueurId).orElse(null);
-        if (joueur == null) return null;
+
+        Joueur joueur = joueurs.findById(joueurId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Joueur introuvable"));
         int n = (int) (Math.random() * 37);
         Partie p = new Partie();
         p.setJoueur(joueur);
@@ -42,11 +45,19 @@ public class PartieServiceImpl implements PartieService {
     }
 
     public Partie modifier(Long id, Partie partie) {
+        if (!parties.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Partie introuvable");
+        }
         partie.setId(id);
         return parties.save(partie);
     }
 
-    public void supprimer(Long id) { parties.deleteById(id); }
+    public void supprimer(Long id) {
+        if (!parties.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Partie introuvable");
+        }
+        parties.deleteById(id);
+    }
 
     @Override
     public List<Partie> trouverParJoueur(Long joueurId) {
@@ -55,8 +66,8 @@ public class PartieServiceImpl implements PartieService {
 
     @Override
     public Partie creerParPseudo(String pseudo) {
-        Joueur joueur = joueurs.findByPseudo(pseudo).orElse(null);
-        if (joueur == null) return null;
+        Joueur joueur = joueurs.findByPseudo(pseudo)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Joueur introuvable"));
         int n = (int) (Math.random() * 37);
         Partie p = new Partie();
         p.setJoueur(joueur);

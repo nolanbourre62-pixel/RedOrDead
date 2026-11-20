@@ -8,7 +8,7 @@ http:
   url: "{{baseUrl}}/api/joueurs"
   body:
     type: json
-    data: '{"pseudo":"joueur1","password":"1234"}'
+    data: '{"pseudo":"gaby1","password":"1234"}'
   auth: inherit
 
 settings:
